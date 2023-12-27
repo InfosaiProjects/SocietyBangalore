@@ -1,0 +1,9 @@
+/target/
+/settings/
+.idea/
+.settings/
+/bin/
+*.classpath
+*.project
+
+/src/main/resources/application.properties
