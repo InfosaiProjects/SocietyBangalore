@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.society.application.model.Receipt;
@@ -23,8 +24,11 @@ public interface ReceiptRepo extends JpaRepository<Receipt, Integer> {
 	 * @Transactional void deleteByid(long id);
 	 */
 
-	@Query("SELECT bankId, SUM(CASE WHEN transactionType = 'credit' THEN amount ELSE -amount END) AS amount FROM Receipt GROUP BY bankId")
-    List<Object[]> calculateNewAmounts();
+//	@Query("SELECT bankId, SUM(CASE WHEN transactionType = 'credit' THEN amount ELSE -amount END) AS amount FROM  Receipt GROUP BY bankId")
+//    List<Object[]> calculateNewAmounts(String bankId);
+
+	@Query("SELECT bankId, SUM(CASE WHEN transactionType = 'credit' THEN amount ELSE -amount END) AS amount FROM Receipt WHERE bankId = :bankId GROUP BY bankId")
+	List<Object[]> calculateNewAmounts(@Param("bankId") String bankId);
 
 	List<Receipt> findBybankId(String bankID);
 }

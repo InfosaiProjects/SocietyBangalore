@@ -80,7 +80,9 @@ public class AccountingController {
 
 	// Payment
 	@GetMapping("/payment")
-	public String payment() {
+	public String payment(Model model) {
+		model.addAttribute("EntryDate", entryService.saveEntry().getEntryDate());
+		model.addAttribute("VoucherNo", entryService.saveEntryForReceipt().getVoucherNo());
 		return "accounting/Payment";
 	}
 
@@ -438,6 +440,36 @@ public class AccountingController {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request.");
 	    }
+	}
+
+
+
+	@PostMapping("/saveReceipt")
+	@ResponseBody
+	public ResponseEntity<String> saveReceipt(@RequestBody List<Receipt> receipt) {
+		receiptRepo.saveAll(receipt);
+		for (Receipt obj : receipt) {
+			List<Object[]> results = receiptRepo.calculateNewAmounts(obj.getBankId());
+
+			for (Object[] result : results) {
+				String bankId = (String) result[0];
+				String newAmount = String.valueOf(result[1]); // Assuming newAmount is a numeric type
+
+				// Find all BranchMaster entities with the given bankId
+			List<BranchMaster> branchMasters = branchMasterRepo.findBybankID(bankId);
+			List<NewGLHeadMaster> newGLHeadMasters = newGLHeadMasterRepo.findByuniqueId(bankId);
+			 for (BranchMaster objB : branchMasters) {
+					objB.setBalance(Double.parseDouble(newAmount));
+				     branchMasterRepo.save(objB);
+			}
+				for (NewGLHeadMaster objNewGl : newGLHeadMasters) {
+					objNewGl.setBalance(Double.parseDouble(newAmount));
+					newGLHeadMasterRepo.save(objNewGl);
+				}
+
+			}
+		}
+		return ResponseEntity.ok("Data Save Successfully !!!! ");
 	}
 
 }

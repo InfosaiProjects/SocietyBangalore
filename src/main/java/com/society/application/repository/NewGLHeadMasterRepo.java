@@ -29,6 +29,7 @@ public interface NewGLHeadMasterRepo extends JpaRepository<NewGLHeadMaster, Long
 	List<NewGLHeadMaster> findByUniqueId(String uniqueIds);
 
 	@Transactional
-	void deleteByuniqueId(String bankID); 
+	void deleteByuniqueId(String bankID);
 
+    List<NewGLHeadMaster> findByuniqueId(String bankId);
 }
