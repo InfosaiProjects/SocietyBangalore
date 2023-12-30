@@ -44,7 +44,16 @@ public class Receipt {
 	private String flag;
 	@Column(name = "bank_id")
 	private String bankId;
+	private String uniqueTransactionId;
 
+
+	public String getUniqueTransactionId() {
+		return uniqueTransactionId;
+	}
+
+	public void setUniqueTransactionId(String uniqueTransactionId) {
+		this.uniqueTransactionId = uniqueTransactionId;
+	}
 
 	public String getBankId() {
 		return bankId;
