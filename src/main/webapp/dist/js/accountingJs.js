@@ -142,8 +142,9 @@ function getBalanceByBranchName(){
 		success: function(data) {
 			console.log(data);
 			if (data.length > 0) {
-				document.getElementById("balanceDebit").value = data[0].balance;
-				document.getElementById("uniqueIdD").value = data[0].bankid;
+				document.getElementById("balance1").value = data[0].balance;
+				document.getElementById("uniqueIdD").value = data[0].bankID;
+				document.getElementById("glHeadNo1").value = data[0].glHeadNo;
 			}
 		},
 		error: function() {

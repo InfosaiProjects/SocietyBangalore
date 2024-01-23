@@ -63,16 +63,17 @@ public class EntryService {
 	// Contra
 	public Long generateContraNumber() {
 		LocalDate today = LocalDate.now();
-		List<Contra> contra = contraRepo.findByEntryDate(today);
+		//List<Contra> contra = contraRepo.findByEntryDate(today);
+		List<Receipt> contra = receiptRepo.findByEntryDate(today);
 		long entryNo = (contra.size()/2) + 1;
-
 		return entryNo;
 	}
 	
-	public Contra saveEntryNo() {
+	public Receipt saveEntryNo() {
 		LocalDate today = LocalDate.now();
 		Long entryNo = generateContraNumber();
-		Contra entry = new Contra();
+		//Contra entry = new Contra();
+		Receipt entry = new Receipt();
 		entry.setEntryDate(today);
 		entry.setVoucherNo(entryNo);
 		return entry;
@@ -203,6 +204,7 @@ public class EntryService {
 		branchobj.setModule("Branch Master");
 		branchobj.setFlag("1");
 		branchobj.setName(requestBody.get("name") + " Interest");
+		branchobj.setBankID(requestBody.get("name")+"001");
 		branchobj.setBranchCode(requestBody.get("branchCode"));
 		branchobj.setCreatedBy(createdBy);
 
@@ -211,6 +213,8 @@ public class EntryService {
 		newGLObj.setStatus(requestBody.get("status"));
 		newGLObj.setAccountType(requestBody.get("accountType"));
 		newGLObj.setBranch(requestBody.get("name"));
+		newGLObj.setBankID(requestBody.get("name")+"001");
+		newGLObj.setUniqueId(requestBody.get("name")+"001");
 		newGLObj.setGlHeadName(requestBody.get("name") + " Interest");
 
 		branchMasterRepo.save(branchobj);

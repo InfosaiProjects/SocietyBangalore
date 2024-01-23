@@ -38,4 +38,14 @@ public interface BranchMasterRepo extends JpaRepository<BranchMaster, Integer>{
 	@Transactional
 	void deleteBybankID(String bankID);
 
+	List<BranchMaster> findByglHeadNo(Long glHeadNo);
+
+	//BranchMaster findByBranchCode(String branchCode);
+
+	BranchMaster findByBranchCodeAndBankID(String branchCode, String bankName);
+
+	BranchMaster findByBranchCode(String branchCode);
+
+	List<BranchMaster> findBybankID(String bankId);
+	
 }

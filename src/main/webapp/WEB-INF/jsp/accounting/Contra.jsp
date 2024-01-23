@@ -92,22 +92,30 @@
 												<strong style="color: Red"></strong>
 											</label>
 											<div class="col-sm-8">
-												<input name="uniqueId" type="text" id="uniqueIdD" readonly="readonly"
+												<input name="bankId" type="text" id="uniqueIdD" readonly="readonly"
 													class="form-control" Placeholder="Enter Unique Id" />
 											</div>
 										</div>
+										<!-- <div class="form-group row">
+											<label for="balance" class="col-sm-4 control-label">GL No
+											</label>
+											<div class="col-sm-8"> -->
+												<input name="glHeadNo" type="hidden" id="glHeadNo1" readonly="readonly"
+													class="form-control" Placeholder="Enter GL No." />
+											<!-- </div>
+										</div> -->
 										<div class="form-group row">
 											<label for="balance" class="col-sm-4 control-label">Balance
 											</label>
 											<div class="col-sm-8">
-												<input name="balanceDebit" type="text" id="balanceDebit" readonly="readonly"
+												<input name="balance" type="text" id="balance1" readonly="readonly"
 													class="form-control" Placeholder="Enter Balance" />
 											</div>
 										</div>
 										<div class="form-group row">
 											<label class="col-sm-4 control-label">Narration</label>
 											<div class="col-sm-8">
-												<textarea name="narration" rows="2" cols="20" id="narration"
+												<textarea name="details" rows="2" cols="20" id="details"
 													class="form-control" Placeholder="Enter Narration">
                                         </textarea>
 											</div>
@@ -151,7 +159,7 @@
 												<strong style="color: Red"></strong>
 											</label>
 											<div class="col-sm-8">
-												<input name="uniqueId" type="text" id="uniqueId" readonly="readonly"
+												<input name="bankId" type="text" id="uniqueId" readonly="readonly"
 													class="form-control" Placeholder="Enter Unique Id" />
 											</div>
 										</div>
@@ -159,7 +167,7 @@
 											<label for="txtJointMemberName"
 												class="col-sm-4 control-label">Select G.L.Head</label>
 											<div class="col-sm-8">
-												<input name="glHeadName" type="text" id="glHeadName"
+												<input name="selectGlHead" type="text" id="selectGlHead"
 													class="form-control" Placeholder="Enter Select G.L.Head" />
 											</div>
 										</div>
@@ -188,7 +196,7 @@
 											<label for="balance" class="col-sm-4 control-label">Balance
 											</label>
 											<div class="col-sm-8">
-												<input name="balance" type="text" value="" id="balance"
+												<input name="balance" type="text" value="" id="balance123"
 													class="form-control" Placeholder="Enter Balance" />
 											</div>
 										</div>
@@ -197,9 +205,18 @@
 												Amount(Rs.) <strong style="color: Red">*</strong>
 											</label>
 											<div class="col-sm-8">
-												<input name="transactionAmount" type="text" value=""
-													id="transactionAmount" class="form-control"
+												<input name="amount" type="text" value=""
+													id="amount" class="form-control"
 													Placeholder="Enter Transaction Amount" />
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="balance" class="col-sm-4 control-label">Cheque Register
+											</label>
+											<div class="col-sm-8">
+												<input name="chequeRegister" type="text" value="1"
+													id="chequeRegister" class="form-control" readonly="readonly"
+													Placeholder="Enter Cheque Register" />
 											</div>
 										</div>
 										<h5 style="font-weight: bold; margin-left: 15px;">Transaction</h5>
@@ -265,10 +282,19 @@
 		$(document).ready(function() {
 				// Initial setup
 				updateDropdownOptions();
-
+				
 				// Radio button change event
 				$('input[name="typeCashBank"]').change(function() {
 						updateDropdownOptions();
+						
+						if($(this).val() === 'Cash'){
+							$('input[name="transactionType"][value="debit"]').prop('checked',true);
+						}
+						
+						if($(this).val() === 'Bank'){
+							$('input[name="transactionType"][value="credit"]').prop('checked',true); 
+						}
+						
 				});
 
 				function updateDropdownOptions() {
@@ -331,85 +357,101 @@
                       var scroll = $("#scroll").val();
                       var typeCashBank = $("input[name='typeCashBank']:checked").val();
                       var selectBank = $("#selectBank").val();
-                      var balanceDebit = $("#balanceDebit").val();
-                      var narration = $("#narration").val();
+                      var balance1 = $("#balance1").val();
+                      var balance123 = $("#balance123").val();
+                      var details = $("#details").val();
                       var branchCode = $("#branchCode").val();
                       var branch = $("#branch").val();
                       var glHeadNo = $("#glHeadNo").val();
-                      var glHeadName = $("#glHeadName").val();
+                      var selectGlHead = $("#selectGlHead").val();
                       var accountNo = $("#accountNo").val();
                       var selectAccountHolder = $("#selectAccountHolder").val();
-                      var balance = $("#balance").val();
+                      //var balance = $("#balance").val();
                       //var transactionAmount = $("#transactionAmount").val();
                       //var transactionAmount = parseFloat($("#transactionAmount").val());
-                      var transactionAmount = Number($("#transactionAmount").val());
+                      var amount = Number($("#amount").val());
                       var transactionType = $("input[name='transactionType']:checked").val();
-                      var uniqueId = $("#uniqueId").val();
-                      var uniqueIdD = $("#uniqueIdD").val();
+                      var bankId = $("#uniqueId").val();
+                      var bankIdD = $("#uniqueIdD").val();
+                      var glHeadNo1 = $("#glHeadNo1").val();
+                      //var balanceCredit = $("#balanceCredit").val();
 
                       // Check if any field is empty
-                      if (selectBank === "" || branchCode === "" || branch === "" || glHeadNo === "" || transactionAmount === "" || selectAccountHolder === "") {
+                      if (selectBank === "" || branchCode === "" || branch === "" || glHeadNo === "" || amount === "" || selectAccountHolder === "") {
                             // $("#validationMessage").text(" Fields are required.");
                             alert("Some  Fields are required.");
                             return;
                       } else {
                           $("#validationMessage").text(""); // Clear any previous validation messages
                       } 
+                      
+                      function generateTransactionId() {
+							const timestamp = new Date().getTime(); // Get current timestamp
+							const randomNum = Math.floor(Math.random() * 1000000); // Generate a random number
+							const transactionId = timestamp + "" + randomNum; // Combine timestamp and random number
+
+							return transactionId;
+						}
+
+						// Example usage
+						const uniqueTransactionId = generateTransactionId();
 					  
                       const data = [];
                       
-                      // Prepare data for AJAX
+                   	  // Bank 2 ie., Debit Operation
                       const debit = {
                 		"entryDate": entryDate,
                 		"voucherNo": voucherNo,
                 		"typeCashBank": typeCashBank,
-                		"selectBank": selectBank,
-                		"balanceDebit": balanceDebit,
-                		"narration": narration,
+                		//"selectBank": selectBank,
+                		//"details": details,
                 		"branchCode": branchCode,
                 		"branch": branch,
                 		"glHeadNo": glHeadNo,
-                		"glHeadName": glHeadName,
+                		"selectGlHead": selectGlHead,
                 		"accountNo": accountNo,
                 		"selectAccountHolder": selectAccountHolder,
-                		"balance": balance,
-                		"transactionAmount": transactionAmount,
+                		"balance": balance123,
+                		"amount": amount,
                 		"transactionType": "debit",
-                		"uniqueId": uniqueId
+                		"bankId": bankId,
+                		"uniqueTransactionId": uniqueTransactionId
            			  };
                       
                       data.push(debit);
 
+                      // Bank 1 ie., Credit Operation
                       const credit = {
                           "entryDate": entryDate,
                           "voucherNo": voucherNo,
                           "typeCashBank": typeCashBank,
                           "selectBank": selectBank,
-                          "balanceDebit": balanceDebit,
-                          "narration": narration,
+                          "balance": balance1,
+                          "details": details,
                           "branchCode": branchCode,
                           "branch": branch,
-                          "glHeadNo": glHeadNo,
-                          "glHeadName": glHeadName,
-                          "accountNo": accountNo,
-                          "selectAccountHolder": selectAccountHolder,
-                          "balance": balance,
-                          "transactionAmount": transactionAmount,
+                          "glHeadNo": glHeadNo1,
+                          //"selectGlHead": selectGlHead,
+                          //"accountNo": accountNo,
+                          //"selectAccountHolder": selectAccountHolder,
+                          //"balance": balance,
+                          "amount": amount,
                           "transactionType": "credit",
-                          "uniqueId": uniqueIdD
+                          "bankId": bankIdD,
+                          "uniqueTransactionId": uniqueTransactionId
                       };
 
                       data.push(credit);
-
+                      
                       // Send AJAX request
                       $.ajax({
                           type: "POST",
-                          url: "saveContraModule",
+                          url: "saveReceipt",
                           contentType: "application/json",
                           data: JSON.stringify(data),
-                          success: function (data) {
+                          success: function (response) {
                               // $("#validationMessage").text("Message Saved Successfully");
-                        	  alert(data);
+                        	  alert(response);
                               // Redirect to another API or URL
                               window.location.href = 'contra';
                           },
@@ -420,7 +462,7 @@
                       }); 
                   });
 
-                  $("#resetBtn").click(function () {
+                  /* $("#resetBtn").click(function () {
                           // Store the initial value of GL Head No
                           var initialGLHeadNoValue = $("#glHeadNo").val();
 
@@ -431,27 +473,47 @@
                           $("#glHeadNo").val(initialGLHeadNoValue);
 
                           $("#validationMessage").text(""); // Clear any validation messages
-                  });
+                  }); */
+                  
               });
     </script>
     
     <script>
     $(document).ready(function () {
-        $("#glHeadNo").on("blur", function () {
+        $("#glHeadNo").on("change", function () {
+        	
             var glHeadNo = $(this).val();
 
             $.ajax({
                 type: "POST",
-                url: "/findByGLHeadNoInContra",
+                url: "/findByGLHeadNoOfBank",
                 contentType: "application/json",
-                data: JSON.stringify({ "glHeadNo": glHeadNo }),
+            	data: JSON.stringify({ "glHeadNo": glHeadNo }),
                 success: function (response) {
-                    // Assuming the response is a single object with glHeadName property
-                    $("#glHeadName").val(response[0].glHeadName);
-                    $("#accountNo").val(response[0].accountValue);
-                    $("#selectAccountHolder").val(response[0].selectAccountHolder);
-                    $("#balance").val(response[0].balance);
-                    $("#uniqueId").val(response[0].uniqueId);
+                	
+                	const cbiObject = response.find(obj => obj.glHeadNo === parseInt(glHeadNo));
+                	
+                	if (cbiObject && cbiObject.bankID !== null) {
+                		$("#balance123").val(cbiObject.balance);
+                		$("#uniqueId").val(cbiObject.bankID);
+                		$("#selectGlHead").val(cbiObject.name);
+                		$("#selectAccountHolder").val(cbiObject.contactPerson);
+                		$("#accountNo").val(cbiObject.bankAccoununtNo);
+                		
+                	}else{
+                		$("#balance123").val("");
+                		
+                		return alert("Plz enter the BANK Gl no !!!!");
+                	}
+
+
+      				   // Assuming the response is a single object with glHeadName property
+//                     $("#selectGlHead").val(response[0].glHeadName);
+//                     $("#accountNo").val(response[0].bankAccoununtNo);
+//                     $("#selectAccountHolder").val(response[0].contactPerson);
+//                     $("#balance123").val(response[0].balance);
+//                     $("#uniqueId").val(response[0].bankID);
+//                     $("#selectGlHead").val(response[0].name);
                 },
                 error: function (error) {
                     console.error("Error fetching data: ", error);
@@ -491,7 +553,7 @@
             success: function(data) {
             	console.log("Success:", data);
                 if (data.length > 0) {
-                    document.getElementById("balanceDebit").value = data[0].balance;
+                    document.getElementById("balance1").value = data[0].balance;
                     document.getElementById("uniqueIdD").value = data[0].uniqueId;
                 }
             },
@@ -502,7 +564,20 @@
         });
     }
 	</script>
+	
+	<!-- Add this script block at the end of your HTML body or inside the head after the DOM is ready -->
+	<script>
+    $(document).ready(function () {
+        $("#resetBtn").click(function () {
+            // Reset all form fields
+            $("#form1")[0].reset();
 
+            // Clear any validation messages
+            $("#validationMessage").text("");
+        });
+    });
+	</script>
+	
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<!-- Bootstrap 3.3.7 -->
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>

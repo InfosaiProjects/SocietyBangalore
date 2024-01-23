@@ -10,7 +10,7 @@ public class DueEmiReport
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String id;
+	private int id;
 	private String slno;
 	private String loanId;
 	private String memberCode;
@@ -30,10 +30,10 @@ public class DueEmiReport
 	private String advisorCode;
 	private String tillDate;
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getSlno() {

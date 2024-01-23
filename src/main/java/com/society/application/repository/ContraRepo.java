@@ -16,10 +16,12 @@ public interface ContraRepo extends JpaRepository<Contra, Long> {
 
 	Contra findByGlHeadNo(Long debitGLHeadNo);
 
+	//@Query("SELECT uniqueId, SUM(CASE WHEN transactionType = 'credit' THEN transactionAmount ELSE -transactionAmount END) AS transactionAmount FROM Contra GROUP BY uniqueId")
+	//List<Object[]> calculateNewAmount();
+	
 	@Query("SELECT uniqueId, SUM(CASE WHEN transactionType = 'credit' THEN transactionAmount ELSE -transactionAmount END) AS transactionAmount FROM Contra GROUP BY uniqueId")
 	List<Object[]> calculateNewAmount();
 
-	
 }
 
 /*

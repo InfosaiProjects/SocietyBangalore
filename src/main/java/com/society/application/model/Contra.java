@@ -14,11 +14,12 @@ public class Contra {
 	private long id;
 	private LocalDate entryDate;
 	private Long voucherNo;
-	//private String selectBranch;
+	private String selectBranch;
 	private String scroll;
 	private String typeCashBank;
 	private String selectBank;
-	private String balanceDebit;
+	private double  balanceDebit;
+	private double  balanceCredit;
 	private String narration;
 	private String branchCode;
 	private String branch;
@@ -32,6 +33,7 @@ public class Contra {
 	private String flag;
 	private String uniqueId;
 	private String transactionId;
+	private String chequeRegister;
 	
 	public long getId() {
 		return id;
@@ -63,10 +65,10 @@ public class Contra {
 	public void setSelectBank(String selectBank) {
 		this.selectBank = selectBank;
 	}
-	public String getBalanceDebit() {
+	public double getBalanceDebit() {
 		return balanceDebit;
 	}
-	public void setBalanceDebit(String balanceDebit) {
+	public void setBalanceDebit(double balanceDebit) {
 		this.balanceDebit = balanceDebit;
 	}
 	public String getNarration() {
@@ -111,11 +113,11 @@ public class Contra {
 	public void setSelectAccountHolder(String selectAccountHolder) {
 		this.selectAccountHolder = selectAccountHolder;
 	}
-	public double getBalance() {
-		return balance;
+	public double getBalanceCredit() {
+		return balanceCredit;
 	}
-	public void setBalance(double balance) {
-		this.balance = balance;
+	public void setBalanceCredit(double balanceCredit) {
+		this.balanceCredit = balanceCredit;
 	}
 	public double getTransactionAmount() {
 		return transactionAmount;
@@ -152,6 +154,12 @@ public class Contra {
 	}
 	public void setTransactionId(String transactionId) {
 		this.transactionId = transactionId;
+	}
+	public String getChequeRegister() {
+		return chequeRegister;
+	}
+	public void setChequeRegister(String chequeRegister) {
+		this.chequeRegister = chequeRegister;
 	}
 	
 }

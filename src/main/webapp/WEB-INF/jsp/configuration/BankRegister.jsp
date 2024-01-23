@@ -152,7 +152,7 @@
 													<th scope="col">Bank Acc No</th>
 													<th scope="col">Account Type</th>
 													<th scope="col">Balance</th>
-													<th scope="col">Delete</th>
+													<!-- <th scope="col">Delete</th> -->
 												</tr>
 												<tbody id="bankRegisterTableBody">
 

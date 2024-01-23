@@ -10,7 +10,7 @@ public class InvestmentReport
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String id;
+	private int id;
 	private String branch;
 	private String txnDate;
 	private String policyNo;
@@ -25,10 +25,10 @@ public class InvestmentReport
 	private String fromdate;
 	private String todate;
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getBranch() {

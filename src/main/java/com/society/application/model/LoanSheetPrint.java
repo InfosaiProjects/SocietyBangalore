@@ -10,7 +10,7 @@ public class LoanSheetPrint
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String id;
+	private int id;
 	private String loanId; 
 	private String loanType;
 	private String appName;
@@ -31,10 +31,10 @@ public class LoanSheetPrint
 	private String advisorCode;
 	private String tillDate;
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getLoanId() {
