@@ -12,10 +12,7 @@ public class BranchMaster {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
-
 	private String bankID;
-	
     private String name;
     private String branchCode;
     private String openingDate;
@@ -29,7 +26,6 @@ public class BranchMaster {
     private String amount;
     private String createdBy;
 	private String createdDt;
-	
 	private Long glHeadNo;
 	private String bankAccoununtNo;
 	private String branch;
@@ -40,7 +36,6 @@ public class BranchMaster {
 	private String selectTransactionCheckbox;
 	private String flag;
 	private double balance;
-
 
 	public String getBankID() {
 		return bankID;
@@ -249,7 +244,5 @@ public class BranchMaster {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
-
 	
-    
 }

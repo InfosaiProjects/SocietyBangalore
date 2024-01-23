@@ -44,16 +44,20 @@ public class Receipt {
 	private String flag;
 	@Column(name = "bank_id")
 	private String bankId;
-
+	private String selectBank;
+	@Column(name = "cheque_register")
+	private String chequeRegister;
+	@Column(name = "unique_transaction_id")
+	private String uniqueTransactionId;
+	private String module;
+	private String moduleType;
 
 	public String getBankId() {
 		return bankId;
 	}
-
 	public void setBankId(String bankId) {
 		this.bankId = bankId;
 	}
-
 	public long getId() {
 		return id;
 	}
@@ -233,6 +237,36 @@ public class Receipt {
 	}
 	public void setDrawnOnBranch(String drawnOnBranch) {
 		this.drawnOnBranch = drawnOnBranch;
+	}
+	public String getSelectBank() {
+		return selectBank;
+	}
+	public void setSelectBank(String selectBank) {
+		this.selectBank = selectBank;
+	}
+	public String getChequeRegister() {
+		return chequeRegister;
+	}
+	public void setChequeRegister(String chequeRegister) {
+		this.chequeRegister = chequeRegister;
+	}
+	public String getUniqueTransactionId() {
+		return uniqueTransactionId;
+	}
+	public void setUniqueTransactionId(String uniqueTransactionId) {
+		this.uniqueTransactionId = uniqueTransactionId;
+	}
+	public String getModule() {
+		return module;
+	}
+	public void setModule(String module) {
+		this.module = module;
+	}
+	public String getModuleType() {
+		return moduleType;
+	}
+	public void setModuleType(String moduleType) {
+		this.moduleType = moduleType;
 	}
 	
 }

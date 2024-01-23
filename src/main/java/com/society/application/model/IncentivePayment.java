@@ -7,9 +7,10 @@ import javax.persistence.Id;
 
 @Entity
 public class IncentivePayment {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String id;
+	private int id;
 	private String monthname;
 	private String code;
 	private String name;
@@ -25,10 +26,11 @@ public class IncentivePayment {
 	private String paybranch;
 	private String paydate;
 	private String paymentby;
-	public String getId() {
+	
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getMonthname() {

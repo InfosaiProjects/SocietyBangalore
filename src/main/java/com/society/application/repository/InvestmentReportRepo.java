@@ -20,6 +20,5 @@ public interface InvestmentReportRepo extends JpaRepository<InvestmentReport, In
 	List<InvestmentReport> findBybiztype(String biztype);
 
 	List<InvestmentReport> findBytxnDateBetween(String fromdate, String todate);
-
 	
 }

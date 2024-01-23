@@ -408,29 +408,31 @@ public class AccountingController {
 	}*/
 	
 	// Save Contra 
-	@PostMapping("/saveContraModule")
+	/*@PostMapping("/saveContraModule")
 	@ResponseBody
-	public ResponseEntity<String> saveContraModule(@RequestBody List<Contra> contraList) {
+	public ResponseEntity<String> saveContraModule(@RequestBody List<Receipt> contraList) {
 	    try {
-	        for (Contra contra : contraList) {
+	        for (Receipt contra : contraList) {
 	            contra.setFlag("1");
 	        }
-	        contraRepo.saveAll(contraList);
+	        receiptRepo.saveAll(contraList);
 	        	
 	        List<Object []> list = contraRepo.calculateNewAmount();
 	        
 	        for(Object[] result : list) {
 	        	String uniqueIds = (String) result[0];
 	        	double amount = (double) result[1];
-	        	//System.out.println(uniqueIds);
-	        	//System.out.println(amount);
+	        	System.out.println(uniqueIds);
+	        	System.out.println(amount);
 	        	
 	        	List<NewGLHeadMaster> glHeadMasters = newGLHeadMasterRepo.findByUniqueId(uniqueIds);
 	        	
 	        	for(NewGLHeadMaster headMaster : glHeadMasters) {
 	        		headMaster.setBalance(amount);
-	        		newGLHeadMasterRepo.save(headMaster);
+	        		//newGLHeadMasterRepo.save(headMaster);
 	        	}
+	        	
+	        	//List<BranchMaster> branchMasters = branchMasterRepo.findBybankID();
 	        }
 	        
 	        return ResponseEntity.ok("Transaction Successful. Voucher No : " + contraList.get(0).getVoucherNo());
@@ -438,6 +440,147 @@ public class AccountingController {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request.");
 	    }
+	}*/
+	
+	/*@PostMapping("/saveContraModule")
+	@ResponseBody
+	public ResponseEntity<String> saveContraModule(@RequestBody List<Contra> contraList) {
+		try {
+			for (Contra contra : contraList) {
+				contra.setFlag("1");
+			}
+			List<Contra> savedContras = contraRepo.saveAll(contraList);
+
+			for (Contra savedContra : savedContras) {
+				updateBalances(savedContra);
+			}
+
+			return ResponseEntity.ok("Transaction Successful. Voucher No : " + contraList.get(0).getVoucherNo());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request.");
+		}
+	}
+
+	private void updateBalances(Contra contra) {
+		if (contra == null || contra.getUniqueId() == null || contra.getTransactionType() == null
+				|| contra.getBranchCode() == null || contra.getTransactionAmount() == 0) {
+			// Log or handle the case where necessary information is missing
+			return;
+		}
+
+		String uniqueId = contra.getUniqueId();
+		double transactionAmount = contra.getTransactionAmount();
+		String transactionType = contra.getTransactionType();
+
+		System.out.println(uniqueId);
+		System.out.println(transactionAmount);
+		System.out.println(transactionType);
+
+		// Update NewGLHeadMaster balance
+		List<NewGLHeadMaster> glHeadMasters = newGLHeadMasterRepo.findByUniqueId(uniqueId);
+		for (NewGLHeadMaster headMaster : glHeadMasters) {
+			double balance = headMaster.getBalance();
+
+			if ("debit".equalsIgnoreCase(transactionType)) {
+				// For debit, subtract the transactionAmount only if there's sufficient balance
+				if (isBalanceSufficient(balance, transactionAmount)) {
+					balance -= transactionAmount;
+				} else {
+					// Handle insufficient balance
+					System.out.println("Insufficient balance for debit operation");
+					// You may log the error, throw an exception, or handle it based on your
+					// requirements
+					return;
+				}
+			} else {
+				// For credit, add the transactionAmount
+				balance += transactionAmount;
+			}
+
+			headMaster.setBalance(balance);
+			newGLHeadMasterRepo.save(headMaster);
+		}
+
+		// Update BranchMaster balance
+		BranchMaster branchMaster = branchMasterRepo.findByBranchCode(contra.getBranchCode());
+		//BranchMaster branchMaster = (BranchMaster) branchMasterRepo.findByglHeadNo(contra.getGlHeadNo());
+		if (branchMaster != null) {
+			double balance = branchMaster.getBalance();
+			System.out.println(balance);
+
+			if ("debit".equalsIgnoreCase(transactionType)) {
+				// For debit, subtract the transactionAmount only if there's sufficient balance
+				if (isBalanceSufficient(balance, transactionAmount)) {
+					balance -= transactionAmount;
+				} else {
+					// Handle insufficient balance
+					System.out.println("Insufficient balance for debit operation");
+					// You may log the error, throw an exception, or handle it based on your
+					// requirements
+					return;
+				}
+			} else {
+				// For credit, add the transactionAmount
+				balance += transactionAmount;
+			}
+
+			branchMaster.setBalance(balance);
+			branchMasterRepo.save(branchMaster);
+		}
+	}
+
+	// Helper method to check if the balance is sufficient for a debit transaction
+	private boolean isBalanceSufficient(double currentBalance, double transactionAmount) {
+		// Consider the balance as sufficient if it's greater than or equal to the
+		// transaction amount
+		return currentBalance >= transactionAmount;
+	}*/
+
+	@PostMapping("/findByGLHeadNoOfBank")
+	@ResponseBody
+	public List<BranchMaster> getFindByGLHeadNoOfBank(@RequestBody BranchMaster branchMaster){
+		return branchMasterRepo.findByglHeadNo(branchMaster.getGlHeadNo());
+	}
+	
+	// Save Contra 
+	@PostMapping("/saveReceipt")
+	@ResponseBody
+	public ResponseEntity<String> saveReceipt(@RequestBody List<Receipt> receipt) {
+		try {
+			for (Receipt receipts : receipt) {
+				receipts.setFlag("1");
+				receipts.setModule("contra");
+				receipts.setChequeRegister("1");
+				receipts.setModuleType("contra"+receipts.getVoucherNo());
+			}
+			receiptRepo.saveAll(receipt);
+			for (Receipt obj : receipt) {
+				List<Object[]> results = receiptRepo.calculateNewAmounts(obj.getBankId());
+
+				for (Object[] result : results) {
+					String bankId = (String) result[0];
+					String newAmount = String.valueOf(result[1]); // Assuming newAmount is a numeric type
+
+					// Find all BranchMaster entities with the given bankId
+					List<BranchMaster> branchMasters = branchMasterRepo.findBybankID(bankId);
+					List<NewGLHeadMaster> newGLHeadMasters = newGLHeadMasterRepo.findByuniqueId(bankId);
+					for (BranchMaster objB : branchMasters) {
+						objB.setBalance(Double.parseDouble(newAmount));
+						branchMasterRepo.save(objB);
+					}
+					for (NewGLHeadMaster objNewGl : newGLHeadMasters) {
+						objNewGl.setBalance(Double.parseDouble(newAmount));
+						newGLHeadMasterRepo.save(objNewGl);
+					}
+
+				}
+			}
+			return ResponseEntity.ok("Transaction Successful. Voucher No : " + receipt.get(0).getVoucherNo());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request.");
+		}
 	}
 
 }

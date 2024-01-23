@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.society.application.model.TrialBalance;
 
 @Repository
-public interface TrialBalanceRepo extends JpaRepository<TrialBalance, Integer> 
+public interface TrialBalanceRepo extends JpaRepository<TrialBalance, String> 
 {
 
 	List<TrialBalance> findBybranchName(String branch_Name);
